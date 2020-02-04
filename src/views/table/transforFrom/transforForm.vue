@@ -140,7 +140,6 @@
 </template>
 
 <script>
-// import './tranforForm.css'
 export default {
   name: 'transforForm',
   props: {
@@ -301,3 +300,7 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="css">
+@import './transforForm.css';
+</style>

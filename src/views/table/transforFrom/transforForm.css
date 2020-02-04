@@ -1,12 +1,14 @@
 .tableBody__tableHeader {
-    padding-top: 2%;
-  }
-  .tableBody__block {
-    height: 25px;
-    background-color: rgb(226, 226, 226);
-    text-align: right;
-    color: gray;
-  }
-  .placeOnFile__pagination {
-    float: right;
-  }
+  padding-top: 2%;
+}
+
+.tableBody__block {
+  height: 25px;
+  background-color: rgb(226, 226, 226);
+  text-align: right;
+  color: gray;
+}
+
+.placeOnFile__pagination {
+  float: right;
+}

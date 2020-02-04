@@ -34,7 +34,6 @@
 
 <script>
 import { getEditContent, getDefaultContent } from './tree.utils.js'
-import './tree.css'
 export default {
   name: 'ly-tree',
   props: {
@@ -315,3 +314,7 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="css">
+@import './tree.css';
+</style>
