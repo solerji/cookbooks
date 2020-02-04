@@ -22,8 +22,6 @@
         :highlight-current="true"
         default-expand-all
         :expand-on-click-node="false"
-        @node-click="checkedTree"
-        @node-drag-end="handleDragEnd"
         draggable
         :render-content="renderContent"
         :allow-drop="allowDrop"
@@ -39,40 +37,12 @@ import { getEditContent, getDefaultContent } from './tree.utils.js'
 import './tree.css'
 export default {
   name: 'ly-tree',
+  props: {
+    commontreeData: Array
+  },
   data() {
     return {
-      treeData: [
-        {
-          id: 1,
-          name: '文件夹1',
-          level: 1,
-          icon: 'el-icon-folder',
-          children: [
-            {
-              id: 2,
-              name: '文件夹2',
-              level: 2,
-              icon: 'el-icon-folder',
-              children: [
-                {
-                  id: 3,
-                  name: '内容一',
-                  level: 3,
-                  icon: 'el-icon-document',
-                  children: []
-                }
-              ]
-            },
-            {
-              id: 4,
-              name: '内容2',
-              level: 2,
-              icon: 'el-icon-document',
-              children: []
-            }
-          ]
-        }
-      ],
+      treeData: [],
       isEdit: false,
       edit_name: '',
       defaultProps: {
@@ -86,7 +56,9 @@ export default {
       oldTemplateid: ''
     }
   },
-
+  created() {
+    this.treeData = this.commontreeData
+  },
   methods: {
     // 复制模板
     copy(node, data) {

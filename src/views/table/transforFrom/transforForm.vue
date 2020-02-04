@@ -62,7 +62,7 @@
               <span>
                 <el-button
                   size="small"
-                  @click="clearOne(scope.$index, scope.row)"
+                  @click="clearOne(scope.index, scope.row)"
                   type="primary"
                 >
                   移除
@@ -114,7 +114,7 @@
               <span>
                 <el-button
                   size="small"
-                  @click="addOne(scope.$index, scope.row)"
+                  @click="addOne(scope.index, scope.row)"
                   type="primary"
                 >
                   增加
@@ -143,35 +143,18 @@
 // import './tranforForm.css'
 export default {
   name: 'transforForm',
+  props: {
+    topTitle: Array,
+    bottomTitle: Array,
+    dataOptions: Array,
+    bottomData: Array
+  },
   data() {
     return {
       obj: {},
-      dataBottom: [
-        {
-          value: 'title',
-          neme: '1'
-        }
-      ],
-      titleTop: [
-        {
-          name: '测试名',
-          value: 'title'
-        },
-        {
-          name: '测试数据',
-          value: 'savedate'
-        }
-      ],
-      titleBottom: [
-        {
-          name: '测试名',
-          value: 'title'
-        },
-        {
-          name: '测试数据',
-          value: 'savedate'
-        }
-      ],
+      dataBottom: [],
+      titleTop: [],
+      titleBottom: [],
       dataTop: [],
       valueTop: '',
       valueBottom: '',
@@ -180,21 +163,18 @@ export default {
       totalCount: 5,
       pageSize: 2,
       currentPage: 1,
-      staffOptions: [
-        { key: 28, display_name: '测试一' },
-        { key: 29, display_name: '测试二' }
-      ],
+      staffOptions: [],
       staffData: [],
       selectedStaffData: []
     }
   },
-  // created() {
-  //   this.getData()
-  // },
+  created() {
+    this.titleTop = this.topTitle
+    this.titleBottom = this.bottomTitle
+    this.dataBottom = this.bottomData
+    this.staffOptions = this.dataOptions
+  },
   methods: {
-    // getData () {
-    //   this.dataBottom = this.dataBottom
-    // },
     handleSizeChange(val) {
       let that = this
       that.pageSize = val
@@ -289,6 +269,7 @@ export default {
         this.$refs['selectedStaffTable'].clearSelection()
       }, 0)
       let repeat = false
+      console.log(1212, this.dataBottom, row)
       this.dataBottom.forEach(item => {
         if (row && item.name === row.name) {
           repeat = true
