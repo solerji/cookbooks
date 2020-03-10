@@ -15,6 +15,21 @@
         </el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="添加文件夹还是文件？"
+      :visible.sync="addDialogVisible"
+      width="30%"
+      :append-to-body="true"
+    >
+      <span slot="footer" align="center">
+        <el-button size="small" @click="selectFolder">
+          文件夹
+        </el-button>
+        <el-button size="small" type="primary" @click="selectDoc">
+          文件
+        </el-button>
+      </span>
+    </el-dialog>
     <div class="ly-tree-container">
       <el-tree
         :data="treeData"
@@ -43,6 +58,7 @@ export default {
     return {
       treeData: [],
       isEdit: false,
+      addDialogVisible: false,
       edit_name: '',
       defaultProps: {
         children: 'children',
@@ -52,7 +68,8 @@ export default {
       select_level: null,
       select_node: null,
       delDialogVisible: false,
-      oldTemplateid: ''
+      oldTemplateid: '',
+      type: ''
     }
   },
   created() {
@@ -85,6 +102,8 @@ export default {
     // 新增
     append(node, data, e) {
       e = event || window.event
+      this.type = ''
+      this.addDialogVisible = true
       e.stopPropagation()
       if (!this.isEdit) {
         this.select_id = data.id
@@ -172,7 +191,6 @@ export default {
       for (let i = 0; i < data.length; i++) {
         if (data[i].id === payload.id) {
           data[i].name = payload.name
-          break
         }
         if (data[i].children && data[i].children.length) {
           that.updateItem(data[i].children, payload)
@@ -204,31 +222,33 @@ export default {
           let virtualNode = node.parent
           let icon = ''
           if (node.parent.data.icon === 'el-icon-folder') {
-            icon = 'el-icon-document'
-          } else {
-            icon = 'el-icon-folder'
-          }
-          let params = {
-            name: this.edit_name,
-            id: virtualNode.data.id,
-            icon: icon
-          }
-          this.addItem(this.treeData, params)
-          virtualNode.data.children.forEach((item, i) => {
-            if (!item.id) {
-              virtualNode.data.children.splice(i, 1)
+            if (this.type === 2) {
+              icon = 'el-icon-document'
+            } else if (this.type === 1) {
+              icon = 'el-icon-folder'
             }
-          })
-          this.isEdit = false
-          this.select_id = null
-          this.select_level = null
-          this.$notify({
-            type: 'success',
-            title: '操作提示',
-            message: '添加成功！',
-            duration: 2000
-          })
-          return
+              let params = {
+              name: this.edit_name,
+              id: virtualNode.data.id,
+              icon: icon
+            }
+            this.addItem(this.treeData, params)
+            virtualNode.data.children.forEach((item, i) => {
+              if (!item.id) {
+                virtualNode.data.children.splice(i, 1)
+              }
+            })
+            this.isEdit = false
+            this.select_id = null
+            this.select_level = null
+            this.$notify({
+              type: 'success',
+              title: '操作提示',
+              message: '添加成功！',
+              duration: 2000
+            })
+            return
+          }
         }
         let params = {
           name: this.edit_name,
@@ -269,30 +289,29 @@ export default {
     },
 
     isSelect(data) {
-      return (
-        data.templateid === this.select_id && data.level === this.select_level
-      )
+      return data.id === this.select_id && 
+             data.level === this.select_level
     },
     // 编辑文字时不能为空
     renderContent(h, { node, data }) {
       let icon = data.icon
       return (
         <span class="ly-tree-node">
-          {(this.isEdit === true && this.isSelect(data)) || data.isEdit ? (
-            <input
+          {(this.isEdit === true && this.isSelect(data)) || data.isEdit  
+            ? <input
               placeholder="名称不能为空"
               class="ly-edit__text"
               on-keyup={() => this.nameChange()}
               value={this.edit_name}
             />
-          ) : (
+           :
             <span>
               <i class={icon} style="color:#2293fb;font-size:20px;"></i>
               <span class="name" style="margin-left:15px;">
                 {data.name}
               </span>
             </span>
-          )}
+          }
           {(this.isEdit === true && this.isSelect(data)) || data.isEdit
             ? getEditContent.call(this, h, data, node)
             : getDefaultContent.call(this, h, data, node)}
@@ -310,6 +329,14 @@ export default {
     // 首个文件夹不可以移动
     allowDrag(draggingNode) {
       return draggingNode.data.name.indexOf('文件夹1') === -1
+    },
+    selectFolder () {
+      this.type = 1
+      this.addDialogVisible = false
+    },
+    selectDoc () {
+      this.type = 2
+      this.addDialogVisible = false
     }
   }
 }

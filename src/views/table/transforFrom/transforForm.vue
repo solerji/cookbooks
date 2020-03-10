@@ -19,7 +19,7 @@
           >
         </el-col>
         <el-col :span="2" :offset="17">
-          <el-button type="primary" size="small">保存</el-button>
+          <el-button type="primary" size="small" @click="saveIt">保存</el-button>
         </el-col>
       </div>
       <div class="tableBody__table1">
@@ -53,6 +53,7 @@
                   :key="item.key"
                   :label="item.display_name"
                   :value="item.key"
+                  :check="item.key"
                 ></el-option>
               </el-select>
             </template>
@@ -73,7 +74,7 @@
         </el-table>
       </div>
       <div class="tableBody__block">
-        <span>搜索项共{{ dataTop.length }}条</span>
+        <span>搜索项共{{ dataBottom.length }}条</span>
       </div>
       <div class="tableBody__table2">
         <el-table
@@ -164,7 +165,8 @@ export default {
       currentPage: 1,
       staffOptions: [],
       staffData: [],
-      selectedStaffData: []
+      selectedStaffData: [],
+      check: ''
     }
   },
   created() {
@@ -181,10 +183,10 @@ export default {
     handleCurrentChange(val) {
       let that = this
       that.currentPage = val
-      // 判断翻页时收发文调取的接口
     },
     // 将下面表格选择项存入staffData中
     handleSelectedStaffChange(rows) {
+      console.log(3232, rows)
       this.staffData = []
       if (rows) {
         rows.forEach(row => {
@@ -197,6 +199,7 @@ export default {
     },
     // 将上边表格选择项存入selectedStaffData中
     handleStaffChange(rows) {
+      console.log(345454, rows)
       this.selectedStaffData = []
       if (rows) {
         rows.forEach(row => {
@@ -247,6 +250,7 @@ export default {
         this.$refs['selectedStaffTable'].clearSelection()
       }, 0)
       this.staffData.forEach(item => {
+        console.log(item)
         this.dataBottom.push(item)
       })
       for (let i = 0; i < this.dataTop.length; i++) {
@@ -268,9 +272,8 @@ export default {
         this.$refs['selectedStaffTable'].clearSelection()
       }, 0)
       let repeat = false
-      console.log(1212, this.dataBottom, row)
       this.dataBottom.forEach(item => {
-        if (row && item.name === row.name) {
+        if (row && item.title === row.name) {
           repeat = true
           alert('此项已存在！')
         }
@@ -278,7 +281,7 @@ export default {
       if (repeat === false) {
         this.dataBottom.push(row)
         for (let i = 0; i < this.dataTop.length; i++) {
-          if (this.dataTop[i] && row && this.dataTop[i].name === row.name) {
+          if (this.dataTop[i] && row && this.dataTop[i].title === row.title) {
             this.dataTop.splice(i, 1)
           }
         }
@@ -292,10 +295,13 @@ export default {
       }, 0)
       this.dataTop.push(row)
       for (let i = 0; i < this.dataBottom.length; i++) {
-        if (this.dataBottom[i] && row && this.dataBottom[i].name === row.name) {
+        if (this.dataBottom[i] && row && this.dataBottom[i].title === row.title) {
           this.dataBottom.splice(i, 1)
         }
       }
+    },
+    saveIt () {
+      console.log(this.dataTop)
     }
   }
 }
