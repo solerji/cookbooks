@@ -1,9 +1,9 @@
 import { request } from './axios'
 
-export function saveTable() {
+export function getTree() {
   return request({
     method: 'get',
-    url: '/saveTable'
+    url: '/getTree'
   })
 }
 

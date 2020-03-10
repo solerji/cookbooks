@@ -48,12 +48,10 @@
 </template>
 
 <script>
+import * as service from '../../../utils/api' 
 import { getEditContent, getDefaultContent } from './tree.utils.js'
 export default {
   name: 'ly-tree',
-  props: {
-    commontreeData: Array
-  },
   data() {
     return {
       treeData: [],
@@ -72,10 +70,14 @@ export default {
       type: ''
     }
   },
-  created() {
-    this.treeData = this.commontreeData
+  mounted () {
+    this.getData()
   },
   methods: {
+    async getData () {
+      let tree = await service.getTree()
+      this.treeData = tree.data.commontreeData
+    },
     // 复制模板
     copy(node, data) {
       if (!this.isEdit) {

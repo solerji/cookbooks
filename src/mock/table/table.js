@@ -39,8 +39,4 @@ let tabledata = {
   ]
 }
 
-let savedata = {
-  code: '保存成功！'
-}
-
-export { tabledata, savedata }
+export { tabledata }
