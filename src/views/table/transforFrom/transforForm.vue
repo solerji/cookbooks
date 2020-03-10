@@ -95,11 +95,11 @@
           >
           </el-table-column>
           <el-table-column label="分配类别" align="center">
-            <template slot-scope="{ row }">
+            <template slot-scope="scope">
               <el-select
                 class="filter-item"
                 placeholder="请选择"
-                v-model="row.name"
+                v-model="scope.row.name"
               >
                 <el-option
                   v-for="item in staffOptions"
@@ -132,7 +132,7 @@
           :page-sizes="pageSizes"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
+          :total="total"
         >
         </el-pagination>
       </div>
@@ -141,6 +141,7 @@
 </template>
 
 <script>
+import * as service from '../../../utils/api'
 export default {
   name: 'transforForm',
   props: {
@@ -160,22 +161,27 @@ export default {
       valueBottom: '',
       radio: '',
       pageSizes: [2, 4, 6],
-      totalCount: 5,
       pageSize: 2,
       currentPage: 1,
       staffOptions: [],
       staffData: [],
       selectedStaffData: [],
-      check: ''
+      check: '',
+      total: 0
     }
   },
-  created() {
-    this.titleTop = this.topTitle
-    this.titleBottom = this.bottomTitle
-    this.dataBottom = this.bottomData
-    this.staffOptions = this.dataOptions
+  mounted() {
+    this.getData()
   },
   methods: {
+      async getData () {
+      let tableData = await service.getTable()
+      this.staffOptions = tableData.data.dataOptions
+      this.titleBottom = tableData.data.bottomTitle
+      this.dataBottom = tableData.data.bottomData
+      this.titleTop = tableData.data.topTitle
+      this.total = tableData.data.bottomData.length
+    },
     handleSizeChange(val) {
       let that = this
       that.pageSize = val
@@ -186,7 +192,6 @@ export default {
     },
     // 将下面表格选择项存入staffData中
     handleSelectedStaffChange(rows) {
-      console.log(3232, rows)
       this.staffData = []
       if (rows) {
         rows.forEach(row => {
@@ -199,7 +204,6 @@ export default {
     },
     // 将上边表格选择项存入selectedStaffData中
     handleStaffChange(rows) {
-      console.log(345454, rows)
       this.selectedStaffData = []
       if (rows) {
         rows.forEach(row => {
@@ -250,7 +254,6 @@ export default {
         this.$refs['selectedStaffTable'].clearSelection()
       }, 0)
       this.staffData.forEach(item => {
-        console.log(item)
         this.dataBottom.push(item)
       })
       for (let i = 0; i < this.dataTop.length; i++) {
@@ -300,8 +303,8 @@ export default {
         }
       }
     },
-    saveIt () {
-      console.log(this.dataTop)
+    async saveIt () {
+      await service.saveTable(this.dataTop)
     }
   }
 }
